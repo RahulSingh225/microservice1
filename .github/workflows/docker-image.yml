@@ -48,8 +48,8 @@ jobs:
           ssh -i key.pem  -o "StrictHostKeyChecking no" $USER_NAME@$HOSTNAME <<'ENDSSH'
            pwd
            ls
-           ./new.sh ${{github.sha}}
-        
+           cd microservice1
+           bash ../new.sh ${{github.sha}}
           ENDSSH 
             
              
