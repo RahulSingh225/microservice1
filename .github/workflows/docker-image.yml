@@ -1,0 +1,58 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+env: 
+  DOCKER_NAME: blkhrt225
+  DOCKER_TOKEN: ef55a328-fa2a-4b7b-b1f0-a560e8fea288
+  IMAGE: blkhrt225/docker-test
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - 
+      name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with: 
+        username: ${{env.DOCKER_NAME}}
+        password: ${{env.DOCKER_TOKEN}}
+        
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag $IMAGE:$GITHUB_SHA
+    - name: Push the Docker Image
+      run: docker push $IMAGE:$GITHUB_SHA
+      
+  deploy: 
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+  
+      
+      - name: Deploy in EC2
+        env:
+            PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+            HOSTNAME : ${{ secrets.HOSTNAME  }}
+            USER_NAME : ${{ secrets.USER_NAME  }}
+            
+        run: |
+          echo "${{ env.PRIVATE_KEY }}" | tr -d '\r' > key.pem && chmod 600 key.pem
+          ssh -i key.pem  -o "StrictHostKeyChecking no" $USER_NAME@$HOSTNAME <<'ENDSSH'
+           pwd
+           ls
+           new.sh $GITHUB_SHA
+          ENDSSH 
+            
+             
+            
+           
+     
+     
