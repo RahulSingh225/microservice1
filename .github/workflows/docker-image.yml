@@ -48,7 +48,8 @@ jobs:
           ssh -i key.pem  -o "StrictHostKeyChecking no" $USER_NAME@$HOSTNAME <<'ENDSSH'
            pwd
            ls
-           new.sh $GITHUB_SHA
+           echo $GITHUB_SHA
+           ./new.sh $GITHUB_SHA
           ENDSSH 
             
              
