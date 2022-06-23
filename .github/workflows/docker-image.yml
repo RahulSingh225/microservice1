@@ -50,7 +50,7 @@ jobs:
            ls
            cd microservice1
            bash ../new.sh ${{github.sha}}
-          ENDSSH 
+          exit 
             
              
             
